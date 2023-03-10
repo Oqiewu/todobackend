@@ -17,7 +17,7 @@ class TaskRepository():
     sqlite_connection.close()
 
     def add_task(self, task: Task.Task):
-        sqlite_connection = sq.connect(":memory:")
+        sqlite_connection = sq.connect("C:\\projects\\todo\\todobackend\\db\\tasks.db")
         cur = sqlite_connection.cursor()
         cur.execute("INSERT INTO tasks (name, label_id) VALUES (?, ?)", (task.text, task.label_id, ))
         sqlite_connection.commit()
@@ -25,7 +25,7 @@ class TaskRepository():
         
 
     def delete_task(self, id: int):
-        sqlite_connection = sq.connect(":memory:")
+        sqlite_connection = sq.connect("C:\\projects\\todo\\todobackend\\db\\tasks.db")
         cur = sqlite_connection.cursor()
         cur.execute(f"DELETE FROM tasks WHERE id = {id}")
         sqlite_connection.commit()
@@ -33,7 +33,7 @@ class TaskRepository():
         
 
     def get_tasks_list(self) -> list:
-        sqlite_connection = sq.connect(":memory:", check_same_thread=False)
+        sqlite_connection = sq.connect("C:\\projects\\todo\\todobackend\\db\\tasks.db", check_same_thread=False)
         cur = sqlite_connection.cursor()
 
         items = cur.execute("SELECT * FROM tasks")

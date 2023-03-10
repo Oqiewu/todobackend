@@ -6,7 +6,7 @@ class LabelRepository():
     global sqlite_connection
 
     def add_label(self, label: Label.Label):
-        sqlite_connection = sq.connect(":memory:")
+        sqlite_connection = sq.connect("C:\\projects\\todo\\todobackend\\db\\tasks.db")
         sqlite_connection.execute("PRAGMA foreign_keys = ON")
         cur = sqlite_connection.cursor()
 
@@ -15,7 +15,7 @@ class LabelRepository():
         
 
     def delete_label(self, id: int):
-        sqlite_connection = sq.connect(":memory:")
+        sqlite_connection = sq.connect("C:\\projects\\todo\\todobackend\\db\\tasks.db")
         sqlite_connection.execute("PRAGMA foreign_keys = ON")
         cur = sqlite_connection.cursor()
         cur.execute(f"DELETE FROM label WHERE id = {id}")
@@ -24,7 +24,7 @@ class LabelRepository():
         
 
     def get_labels_list(self) -> list:
-        sqlite_connection = sq.connect(":memory:", check_same_thread=False)
+        sqlite_connection = sq.connect("C:\\projects\\todo\\todobackend\\db\\tasks.db", check_same_thread=False)
         sqlite_connection.execute("PRAGMA foreign_keys = ON")
         cur = sqlite_connection.cursor()
 
