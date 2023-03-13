@@ -28,10 +28,10 @@ def create_task(item: Task.Task):
     return item
 
 @app.get('/tasks')
-def get_tasks():
+def get_tasks(label_id: int = None):
     repo = TaskRepository.TaskRepository()
     service = TaskService.TaskService(repo)
-    return service.get_tasks_list()
+    return service.get_tasks_list(label_id)
 
 @app.delete('/task/{id}')
 def delete_task(id: int):

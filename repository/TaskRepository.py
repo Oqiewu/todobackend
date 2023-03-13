@@ -32,11 +32,14 @@ class TaskRepository():
         sqlite_connection.close()    
         
 
-    def get_tasks_list(self) -> list:
+    def get_tasks_list(self, label_id = None) -> list:
         sqlite_connection = sq.connect("C:\\projects\\todo\\todobackend\\db\\tasks.db", check_same_thread=False)
         cur = sqlite_connection.cursor()
 
-        items = cur.execute("SELECT * FROM tasks")
+        if label_id != None:
+             items = cur.execute(f"SELECT * FROM tasks WHERE label_id = ?", (label_id,))
+        else:
+            items = cur.execute("SELECT * FROM tasks")
         
         items_list = []
         for item in items:
