@@ -1,11 +1,12 @@
 from entity import Task
 import sqlite3 as sq
+from decouple import config
 
 class TaskRepository():
     global cur
     global sqlite_connection
 
-    sqlite_connection = sq.connect("C:\\projects\\todo\\todobackend\\db\\tasks.db")
+    sqlite_connection = sq.connect(config("path_to_db"))
     cur = sqlite_connection.cursor()
 
     cur.execute("""CREATE TABLE IF NOT EXISTS tasks(
@@ -17,23 +18,21 @@ class TaskRepository():
     sqlite_connection.close()
 
     def add_task(self, task: Task.Task):
-        sqlite_connection = sq.connect("C:\\projects\\todo\\todobackend\\db\\tasks.db")
+        sqlite_connection = sq.connect(config("path_to_db"))
         cur = sqlite_connection.cursor()
         cur.execute("INSERT INTO tasks (name, label_id) VALUES (?, ?)", (task.text, task.label_id, ))
         sqlite_connection.commit()
         sqlite_connection.close()
         
-
     def delete_task(self, id: int):
-        sqlite_connection = sq.connect("C:\\projects\\todo\\todobackend\\db\\tasks.db")
+        sqlite_connection = sq.connect(config("path_to_db"))
         cur = sqlite_connection.cursor()
         cur.execute(f"DELETE FROM tasks WHERE id = {id}")
         sqlite_connection.commit()
         sqlite_connection.close()    
         
-
     def get_tasks_list(self, label_id = None) -> list:
-        sqlite_connection = sq.connect("C:\\projects\\todo\\todobackend\\db\\tasks.db", check_same_thread=False)
+        sqlite_connection = sq.connect(config("path_to_db"), check_same_thread=False)
         cur = sqlite_connection.cursor()
 
         if label_id != None:

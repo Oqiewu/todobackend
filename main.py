@@ -1,10 +1,10 @@
 import uvicorn
-from fastapi import FastAPI
-from entity import Task, Label
-from services import TaskService, LabelService
-from repository import TaskRepository, LabelRepository
+from fastapi import FastAPI, Body
+from entity import Task, Label, User
+from services import TaskService, LabelService, UserService
+from repository import TaskRepository, LabelRepository, UserRepository
 from fastapi.middleware.cors import CORSMiddleware
-
+from auth.Jwt_handler import signJWT
 app = FastAPI()
 
 origins = ["*"]
@@ -45,7 +45,6 @@ def delete_task(id: int):
 def create_label(label: Label.Label):
     repo = LabelRepository.LabelRepository()
     service = LabelService.LabelService(repo)
-
     service.add_label(label)
 
     return label
@@ -62,5 +61,43 @@ def delete_label(id: int):
     service = LabelService.LabelService(repo)
     service.delete_label(id)
     return "Successful!"
+
+#user requests
+@app.post('/user/signup')
+def create_user(user: User.CreateUser):
+    repo = UserRepository.UserRepository()
+    service = UserService.UserService(repo)
+    service.add_user(user)
+    return signJWT(user.email)
+
+def check_user(data: User.LoginUser):
+    repo = UserRepository.UserRepository()
+    service = UserService.UserService(repo)
+    users = service.get_users()
+    for user in users:
+        if user.email == data.email and user.hashed_password == data.hashed_password:
+            return True
+    
+@app.post("/user/login")
+def user_login(user: User.LoginUser):
+    if check_user(user):
+        return signJWT(user.email)
+    else:
+        return {
+            "error": "Invalid login details!"
+        }
+
+@app.delete('/user/{id}')
+def delete_user(id: int):
+    repo = UserRepository.UserRepository()
+    service = UserService.UserService(repo)
+    service.delete_user(id)
+    return "Successful!"
+
+@app.get("/users")
+def get_users():
+    repo = UserRepository.UserRepository()
+    service = UserService.UserService(repo)
+    return service.get_users()
 
 uvicorn.run(app)
